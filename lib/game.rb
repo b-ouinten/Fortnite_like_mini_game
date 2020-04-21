@@ -1,20 +1,21 @@
 class Game
-  attr_accessor :user, :bots
+  attr_accessor :user, :bots_in_sight, :bots_left, :bot_index
   
   def initialize(user_name)
     @user = HumanPlayer.new(user_name)
-    @bots = []
-    4.times { |number| @bots << Player.new("bot0#{number}") }
+    @bots_left = 10
+    @bots_in_sight = []
+    @bot_index = 0
   end
   
   def is_still_ongoing?
-    @user.life_points > 0 && @bots.count > 0
+    @user.life_points > 0 && (@bots_left > 0 || @bots_in_sight.count > 0)
   end
   
   def show_players
     puts "----------------------------------"
     puts "Your health state is : #{@user.life_points} points."
-    puts "You have #{@bots.count} bots left to fight!"
+    puts "You have #{@bots_in_sight.count} bots in sight left to fight!"
     puts "----------------------------------"
   end
   
@@ -25,12 +26,18 @@ class Game
       puts "w - look for a better weapon."
       puts "t - seek treatment."
       puts "------------------------------------"
-      puts "attack a player in sight :"
-      # --- Show remaining bots ---
-      @bots.each_index { |bot_number|
-      puts " #{bot_number} - #{@bots[bot_number].name} has #{@bots[bot_number].life_points} points of life."
-    }
-    puts "Your strategy ? > "
+      puts "attack a player in sight :" if @bots_in_sight.count > 0
+      
+      # --- Show remaining bots_in_sight ---
+      @bots_in_sight.each_index { |bot_number|
+        puts " #{bot_number} - #{@bots_in_sight[bot_number].name} has #{@bots_in_sight[bot_number].life_points} points of life."
+      }
+    begin
+      puts "------------------------------------"
+      puts "Your strategy ? > "
+      strategy = gets.chomp
+      puts "Wrong answer! i didn't understand." if (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
+    end while (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
     puts "------------------------------------"
   end
   
@@ -41,8 +48,8 @@ class Game
     when 't'
       @user.search_health_pack
     else
-      @bots.each_index { |rank| 
-        bot_attacked = @bots[rank]
+      @bots_in_sight.each_index { |rank| 
+        bot_attacked = @bots_in_sight[rank]
         if rank.to_s == strategy_choise 
           @user.attacks(bot_attacked) 
           kill_bot(bot_attacked) if bot_attacked.life_points <= 0
@@ -51,15 +58,39 @@ class Game
     end
   end
 
+  def new_bots_in_sight
+    if @bots_left > 0
+      hazard = rand(1..6)
+      if (hazard == 1)
+        puts "No new bots in sight! You are lucky."
+      elsif (hazard >= 2 && hazard <= 4)
+        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bot_index += 1
+        puts "There is a new bot in sight! Be careful, raise number to #{@bots_in_sight.count} "
+      else
+        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bot_index += 1
+        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bot_index += 1
+        puts "There is a two new bots in sight! Make mind, raise number to #{@bots_in_sight.count} "
+      end
+
+      # --- Decrease remaining bots_in_sight number ---
+      @bots_left -= 1
+    else
+      puts "Bots all in sight!"
+    end
+  end
+
   def bots_attack
-    if (@bots.count > 0)
+    if (@bots_in_sight.count > 0)
       puts "-----------------------------"
-      puts "The bots attack! Watch out!"
+      puts "The bots in sight attack! Watch out!"
       puts "-----------------------------"
-      @bots.each { |bot| bot.attacks(@user) }
+      @bots_in_sight.each { |bot| bot.attacks(@user) }
     else
       puts "-------------------------------"
-      puts "There is no bots left to fight!"
+      puts "There is no bots in sight left to fight!"
       puts "-------------------------------"
     end
   end
@@ -79,6 +110,6 @@ class Game
 
   private
   def kill_bot(bot)
-    @bots.delete(bot)
+    @bots_in_sight.delete(bot)
   end
 end

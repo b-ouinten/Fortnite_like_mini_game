@@ -21,7 +21,14 @@ class App
     puts "Press enter to continue ..."
     gets
     
-    # --- The user strategy ---
+    # --- Add a new bots ---
+    my_game.new_bots_in_sight
+    
+    # pause
+    puts "Press enter to continue ..."
+    gets
+
+    # --- Define the user strategy ---
     # --- Show strategy menu ---
     my_game.menu
 
