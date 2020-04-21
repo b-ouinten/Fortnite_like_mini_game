@@ -37,7 +37,7 @@ class App
         puts " 0 - Josiane has #{bot1.life_points} points of life."
         puts " 1 - José has #{bot2.life_points} life points."
         puts "------------------------------------"
-        print "What's your startegy > "
+        print "What's your startegy ? > "
         strategy = gets.chomp
         puts "------------------------"
         puts "I didn't understand!" if (strategy != 'w' && strategy != 't' && strategy != '0' && strategy != '1')
@@ -61,14 +61,21 @@ class App
       
       # --- The bots attack ---
       puts "-----------------------------"
-      puts "The bots attacks! Watch out!"
+      puts "The bots attack! Watch out!"
       puts "-----------------------------"
     bots.each { |bot| bot.attacks(user) if bot.life_points > 0}
-    # binding.pry
   end
 
-  puts user.life_points
-
+  puts "Game finished!"
+  if (user.life_points > 0)
+    puts "----------------"
+    puts "BRAVO, you WON!"
+    puts "----------------"
+  else
+    puts "----------------"
+    puts "BRAVO, you LOSE!!"
+    puts "----------------"
+  end
 end
   
 App.new

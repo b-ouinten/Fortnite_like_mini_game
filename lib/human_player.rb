@@ -11,10 +11,7 @@ class HumanPlayer < Player
     puts "#{@name} has #{@life_points} points of life and a leval #{@weapon_level} weapon." 
   end
 
-  def compute_domage
-    rand(1..6) * @weapon_level
-  end
-
+  
   def search_new_weapon
     new_weapon_level = rand(1..6)
     puts "You found a level #{new_weapon_level} weapon."
@@ -25,7 +22,7 @@ class HumanPlayer < Player
       puts ";o) It isn't better than yours!"
     end
   end
-
+  
   def search_health_pack
     luck = rand(1..6)
     case luck
@@ -38,5 +35,10 @@ class HumanPlayer < Player
       puts "Waow, you found a +80 points pack."
       @life_points += 80
     end
+  end
+
+  private
+  def compute_domage
+    rand(1..6) * @weapon_level
   end
 end
