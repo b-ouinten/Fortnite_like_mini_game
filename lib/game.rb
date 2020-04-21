@@ -36,7 +36,7 @@ class Game
     # Control user type ---
     begin
       puts "------------------------------------"
-      puts "Your strategy ? > "
+      print "Your strategy ? > "
       strategy = gets.chomp
       puts "Wrong answer! i didn't understand." if (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
     end while (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
@@ -100,14 +100,15 @@ class Game
   end
 
   def finished
+    puts "Game finished!"
     if (@user.life_points > 0)
-      puts "----------------"
+      puts "---------------"
       puts "BRAVO, you WON!"
-      puts "----------------"
+      puts "---------------"
     else
-      puts "----------------"
+      puts "------------"
       puts "You LOSE!!!"
-      puts "----------------"
+      puts "------------"
     end
   
   end

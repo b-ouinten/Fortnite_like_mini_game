@@ -2,8 +2,9 @@ require 'bundler'
 Bundler.require
 
 require_relative 'lib/player'
-require_relative 'lib/game'
 require_relative 'lib/human_player'
+require_relative 'lib/bot'
+require_relative 'lib/game'
 
 class App
   puts "--------------------------------------------------"
@@ -12,14 +13,14 @@ class App
   puts "--------------------------------------------------"
   print 'Your name > '
   user = HumanPlayer.new(gets.chomp)
-  bot1 = Player.new('Josiane')
-  bot2 = Player.new('José')
+  bot1 = Bot.new('Josiane')
+  bot2 = Bot.new('José')
   bots = []
   bots << bot1 << bot2
   until ((user.life_points <=0) || (bot1.life_points <= 0 && bot2.life_points <= 0))
-    puts "--------------------------------"
+    puts "---------------------------------"
     puts "Your health state is : #{user.life_points} lifes."
-    puts "--------------------------------"
+    puts "---------------------------------"
     
     # pause
     puts "Press enter to continue ..."
@@ -28,53 +29,56 @@ class App
     # --- The user strategy ---
     puts "------------------------------------"
     puts "What action do you want to perform ?"
-      begin
-        puts "------------------------------------"
-        puts "w - look for a better weapon."
-        puts "t - seek treatment."
-        puts "------------------------------------"
-        puts "attack a player in sight :"
-        puts " 0 - Josiane has #{bot1.life_points} points of life."
-        puts " 1 - José has #{bot2.life_points} life points."
-        puts "------------------------------------"
-        print "What's your startegy ? > "
-        strategy = gets.chomp
-        puts "------------------------"
-        puts "I didn't understand!" if (strategy != 'w' && strategy != 't' && strategy != '0' && strategy != '1')
-      end while (strategy != 'w' && strategy != 't' && strategy != '0' && strategy != '1')
-      
-      # --- Execute strategy ---
-      case strategy
-      when 'w'
-        user.search_new_weapon
-      when 't'
-        user.search_health_pack
-      when '0'
-        user.attacks(bot1)
-      when '1'
-        user.attacks(bot2)
-      end
-      
-      # Pause
-      puts "Press enter to continue ..."
-      gets
-      
-      # --- The bots attack ---
+    begin
+      puts "------------------------------------"
+      puts "w - look for a better weapon."
+      puts "t - seek treatment."
+      puts "------------------------------------"
+      puts "attack a player in sight :"
+      puts " 0 - Josiane has #{bot1.life_points} points of life."
+      puts " 1 - José has #{bot2.life_points} life points."
+      puts "------------------------------------"
+      print "What's your startegy ? > "
+      strategy = gets.chomp
+      puts "------------------------"
+      puts "I didn't understand!" if (strategy != 'w' && strategy != 't' && strategy != '0' && strategy != '1')
+    end while (strategy != 'w' && strategy != 't' && strategy != '0' && strategy != '1')
+    
+    # --- Execute strategy ---
+    case strategy
+    when 'w'
+      user.search_new_weapon
+    when 't'
+      user.search_health_pack
+    when '0'
+      user.attacks(bot1)
+    when '1'
+      user.attacks(bot2)
+    end
+    
+    # Pause
+    puts "Press enter to continue ..."
+    gets
+    
+    # --- The bots attack ---
+    if (bot1.life_points > 0 || bot2.life_points > 0)
       puts "-----------------------------"
       puts "The bots attack! Watch out!"
       puts "-----------------------------"
+    end
     bots.each { |bot| bot.attacks(user) if bot.life_points > 0}
   end
 
+  puts "---------------"
   puts "Game finished!"
   if (user.life_points > 0)
-    puts "----------------"
+    puts "---------------"
     puts "BRAVO, you WON!"
-    puts "----------------"
+    puts "---------------"
   else
-    puts "----------------"
-    puts "BRAVO, you LOSE!!"
-    puts "----------------"
+    puts "----------"
+    puts "You LOSE!!"
+    puts "----------"
   end
 end
   

@@ -8,8 +8,8 @@ require_relative 'lib/game'
 
 class App
   puts "--------------------------------------------------"
-  puts "|Welcome to 'YOU WANT GO FURTHER, SEE IN RUBY' ! |"
-  puts "|The object of this game is to be last survivor !|"
+  puts "|Welcome to 'IF YOU WANT SURVIVE, THINK IN RUBY'!|"
+  puts "|The object of this game is to be last survivor! |"
   puts "--------------------------------------------------"
   print 'Your name > '
   my_game = Game.new(gets.chomp)
