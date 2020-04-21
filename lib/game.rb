@@ -13,25 +13,27 @@ class Game
   end
   
   def show_players
-    puts "----------------------------------"
+    puts "---------------------------------------"
     puts "Your health state is : #{@user.life_points} points."
     puts "You have #{@bots_in_sight.count} bots in sight left to fight!"
-    puts "----------------------------------"
+    puts "---------------------------------------"
   end
   
   def menu
     puts "------------------------------------"
     puts "What action do you want to perform ?"
-      puts "------------------------------------"
-      puts "w - look for a better weapon."
-      puts "t - seek treatment."
-      puts "------------------------------------"
-      puts "attack a player in sight :" if @bots_in_sight.count > 0
+    puts "------------------------------------"
+    puts "w - look for a better weapon."
+    puts "t - seek treatment."
+    puts "------------------------------------"
+    puts "attack a player in sight :" if @bots_in_sight.count > 0
       
-      # --- Show remaining bots_in_sight ---
-      @bots_in_sight.each_index { |bot_number|
-        puts " #{bot_number} - #{@bots_in_sight[bot_number].name} has #{@bots_in_sight[bot_number].life_points} points of life."
-      }
+    # --- Show remaining bots_in_sight ---
+    @bots_in_sight.each_index { |bot_number|
+      puts " #{bot_number} - #{@bots_in_sight[bot_number].name} has #{@bots_in_sight[bot_number].life_points} points of life."
+    }
+    
+    # Control user type ---
     begin
       puts "------------------------------------"
       puts "Your strategy ? > "
@@ -39,6 +41,7 @@ class Game
       puts "Wrong answer! i didn't understand." if (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
     end while (strategy != 'w' && strategy != 't' && (strategy.to_i < 0 || strategy.to_i > @bots_in_sight.count))
     puts "------------------------------------"
+    strategy
   end
   
   def menu_choise(strategy_choise)
@@ -64,19 +67,20 @@ class Game
       if (hazard == 1)
         puts "No new bots in sight! You are lucky."
       elsif (hazard >= 2 && hazard <= 4)
-        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bots_in_sight << Bot.new("bot" + "%02d" % "#{bot_index}")
         @bot_index += 1
-        puts "There is a new bot in sight! Be careful, raise number to #{@bots_in_sight.count} "
+        puts "There is a new bot in sight! Be careful, raise number to #{@bots_in_sight.count}."
+        # --- Decrease remaining bots_in_sight number ---
+        @bots_left -= 1
       else
-        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bots_in_sight << Bot.new("bot" + "%02d" % "#{bot_index}")
         @bot_index += 1
-        @bots_in_sight << Player.new("bot" + "%02d" % "#{bot_index}")
+        @bots_in_sight << Bot.new("bot" + "%02d" % "#{bot_index}")
         @bot_index += 1
-        puts "There is a two new bots in sight! Make mind, raise number to #{@bots_in_sight.count} "
+        puts "There is a two new bots in sight! Make mind, raise number to #{@bots_in_sight.count}."
+        # --- Decrease remaining bots_in_sight number ---
+        @bots_left -= 2
       end
-
-      # --- Decrease remaining bots_in_sight number ---
-      @bots_left -= 1
     else
       puts "Bots all in sight!"
     end
@@ -84,14 +88,14 @@ class Game
 
   def bots_attack
     if (@bots_in_sight.count > 0)
-      puts "-----------------------------"
+      puts "------------------------------------"
       puts "The bots in sight attack! Watch out!"
-      puts "-----------------------------"
+      puts "------------------------------------"
       @bots_in_sight.each { |bot| bot.attacks(@user) }
     else
-      puts "-------------------------------"
+      puts "----------------------------------------"
       puts "There is no bots in sight left to fight!"
-      puts "-------------------------------"
+      puts "----------------------------------------"
     end
   end
 
@@ -102,7 +106,7 @@ class Game
       puts "----------------"
     else
       puts "----------------"
-      puts "You LOSE!!"
+      puts "You LOSE!!!"
       puts "----------------"
     end
   

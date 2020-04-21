@@ -2,8 +2,9 @@ require 'bundler'
 Bundler.require
 
 require_relative 'lib/player'
-require_relative 'lib/game'
 require_relative 'lib/human_player'
+require_relative 'lib/bot'
+require_relative 'lib/game'
 
 class App
   puts "--------------------------------------------------"
@@ -28,12 +29,10 @@ class App
     puts "Press enter to continue ..."
     gets
 
-    # --- Define the user strategy ---
     # --- Show strategy menu ---
-    my_game.menu
-
+    # --- Define the user strategy ---
     # --- Execute strategy ---
-    my_game.menu_choise(gets.chomp)
+    my_game.menu_choise(my_game.menu)
     
     # Pause
     puts "Press enter to continue ..."
